@@ -3,35 +3,25 @@
 #include <iostream>
 #include <fstream>
 #include "WindowBuilder.h"
+#include "Color.h"
+#include "PPM.h"
 
-// An image array that represent a x cord, y cord and RGB values
-int image[300][300][3];
 
-// Adds random RBG values to our array
-void imageBuilder() {
-
-    for (int i = 0; i < 300; i++) {
-        for (int j = 0; j < 300; j++) {
-
-            image[i][j][0] = rand()%255;
-            image[i][j][1] = rand()%255;
-            image[i][j][2] = rand()%255;
-        }
-    }
-}
-
-// Creates a PPM file of the noise we created
-void saveToPPM(int width, int height) {
-    std::ofstream imgFile("noise.ppm");
-    imgFile << "P3" << std::endl;
-    imgFile << width << " " << height << std::endl;
-    imgFile << "255" << std::endl;
+PPM genNoise(int width, int height) {
+    std::vector<std::vector<Color>> ppm(width, std::vector<Color>(height, 0));
     for (int i = 0; i < width; i++) {
         for (int j = 0; j < height; j++) {
-            imgFile << image[i][j][0] << " " << image[i][j][1] << " " << image[i][j][2] << std::endl;
+            ppm[i][j] = Color();
         }
     }
-    imgFile.close();
+
+    return PPM(ppm, width, height);
+}
+
+PPM noise = genNoise(300, 300);
+
+PPM getNoise() {
+    return noise;
 }
 
 // initializes the glut window
@@ -56,13 +46,16 @@ void display() {
     // Begins drawing on the window
     glBegin(GL_POINTS);
 
-    // Changes Pixel color based on the RBG values in our image array
-    for (int i = 0; i < 300; i++) {
+    // Changes Pixel color based on the RBG values in our noise PPM
+    for (int i = 0; i < noise.getWidth(); i++) {
 
-        for (int j = 0; j < 300; j++) {
+        for (int j = 0; j < noise.getHeight(); j++) {
 
-
-            glColor3ub(image[i][j][0], image[i][j][1], image[i][j][2]);
+            glColor3ub(
+                    noise.getColor(i, j).getRed(),
+                    noise.getColor(i, j).getGreen(),
+                    noise.getColor(i, j).getBlue()
+            );
             glVertex2i(i, j);
 
         }

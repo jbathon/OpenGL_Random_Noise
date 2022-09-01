@@ -7,24 +7,32 @@
 
 #include "Color.h"
 #include <string>
+#include <vector>
 
 class PPM {
-    private:
-        int width;
-        int height;
-        Color** ppm;
+private:
+    int width;
+    int height;
+    std::vector<std::vector<Color>> ppm;
 
-    public:
-        PPM(Color** ppm);
+public:
+    PPM();
 
-        int getWidth();
-        int getHeight();
+    PPM(std::vector<std::vector<Color>> ppm, int width, int height);
 
-        void save(std::string name);
+    void setPPM(std::vector<std::vector<Color>> ppm, int width, int height);
 
-        Color getColor(int widthIndex, int heightIndex);
+    int getWidth();
 
-        static PPM load(std::string fileLocation);
+    int getHeight();
+
+    void save(std::string name);
+
+    Color getColor(int widthIndex, int heightIndex);
+
+    static PPM load(std::string fileLocation);
+
+    ~PPM();
 
 };
 
